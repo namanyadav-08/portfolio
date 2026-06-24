@@ -1,0 +1,175 @@
+/* ---- Book-shop page : full-screen Grainient gradient background ---- */
+
+.shop-page {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background: #6366f1; /* fallback until the Grainient gradient paints */
+  color: #ffffff;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Grainient gradient background — fixed, covers the entire screen */
+.shop-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ---- Minimal nav ---- */
+.shop-back {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.75rem;
+  z-index: 20;
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.shop-back:hover {
+  color: #ffffff;
+  transform: translateX(-3px);
+}
+
+/* ---- Header : transparent, sits directly on the gradient ---- */
+.shop-banner {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  text-align: center;
+  padding: clamp(5rem, 12vh, 7.5rem) 1.5rem clamp(2rem, 5vh, 3rem);
+}
+
+.shop-banner__inner {
+  max-width: 58rem;
+  margin: 0 auto;
+}
+
+.shop-eyebrow {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.46em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0 0 1.4rem;
+  padding-left: 0.46em; /* optical centering for the tracking */
+}
+
+.shop-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 800;
+  font-size: clamp(2.6rem, 7.5vw, 5.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  color: #ffffff;
+  text-shadow: 0 2px 30px rgba(18, 26, 58, 0.35);
+  margin: 0;
+}
+
+.shop-rule {
+  width: 56px;
+  height: 1px;
+  margin: 1.75rem auto;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.shop-subtitle {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 16px rgba(18, 26, 58, 0.3);
+  margin: 0;
+}
+
+/* ---- Book showcase ---- */
+.shop-book {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.75rem;
+  padding: clamp(2.5rem, 7vh, 4.5rem) 1.5rem clamp(3rem, 7vh, 4.5rem);
+}
+
+.book-stage {
+  position: relative;
+}
+
+/* soft grounded shadow under the book */
+.book-stage::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -28px;
+  width: 72%;
+  height: 28px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(18, 26, 58, 0.35) 0%, rgba(18, 26, 58, 0) 70%);
+  filter: blur(8px);
+}
+
+.book-cover {
+  display: block;
+  width: clamp(220px, 54vw, 300px);
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 30px 55px -20px rgba(15, 23, 55, 0.6);
+  transform: rotate(-3deg);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.6s ease;
+}
+
+.book-cover:hover {
+  transform: rotate(0deg) translateY(-6px);
+  box-shadow: 0 42px 70px -22px rgba(15, 23, 55, 0.65);
+}
+
+.shop-byline {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 14px rgba(18, 26, 58, 0.3);
+  margin: 0.5rem 0 0;
+}
+
+/* ---- CTA : frosted glass, consistent with the gradient ---- */
+.order-btn {
+  display: inline-block;
+  padding: 0.95rem 2.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  box-shadow: 0 12px 30px -12px rgba(15, 23, 55, 0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.order-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px -14px rgba(15, 23, 55, 0.6);
+}
+
+.order-btn:active {
+  transform: translateY(-1px);
+}
