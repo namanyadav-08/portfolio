@@ -1,5 +1,7 @@
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import Lightfall from '../shared/Lightfall'
+import Galaxy from '../shared/Galaxy'
 
 // Matched to the design system — keep in sync with globals.css palette.
 // Hoisted so the array keeps a stable reference across renders (it's in
@@ -11,6 +13,22 @@ const HAS_FINE_POINTER =
   typeof window !== 'undefined' &&
   typeof window.matchMedia === 'function' &&
   window.matchMedia('(pointer: fine)').matches
+
+// Lightfall's shader needs WebGL *and* usable high-precision floats in the
+// fragment stage. Some low-end Android GPUs lack one or the other, in which
+// case Lightfall renders nothing — so we detect that up front and fall back.
+function deviceSupportsLightfall() {
+  if (typeof document === 'undefined') return true
+  try {
+    const canvas = document.createElement('canvas')
+    const gl = canvas.getContext('webgl2') || canvas.getContext('webgl')
+    if (!gl) return false
+    const hp = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT)
+    return Boolean(hp && hp.precision > 0)
+  } catch {
+    return false
+  }
+}
 
 function ScrollIndicator() {
   return (
@@ -33,31 +51,66 @@ function ScrollIndicator() {
 }
 
 export default function HeroSection({ reducedMotion }) {
+  const bgRef = useRef(null)
+  // Start on the fallback only if the device clearly can't run Lightfall.
+  const [useFallback, setUseFallback] = useState(() => !deviceSupportsLightfall())
+
+  // Catch the other failure mode: a device that compiles the shader but then
+  // loses the context (heavy shader timing out). Switch to the fallback if so.
+  useEffect(() => {
+    if (useFallback) return
+    const canvas = bgRef.current?.querySelector('canvas')
+    if (!canvas) return
+    const onLost = (e) => {
+      e.preventDefault?.()
+      setUseFallback(true)
+    }
+    canvas.addEventListener('webglcontextlost', onLost)
+    return () => canvas.removeEventListener('webglcontextlost', onLost)
+  }, [useFallback])
+
   return (
     <section
       id="hero"
       className="relative flex min-h-screen items-center justify-center overflow-hidden"
     >
-      {/* Lightfall as the full-bleed background */}
-      <div className="absolute inset-0 z-0">
-        <Lightfall
-          colors={HERO_COLORS}
-          backgroundColor="#050510"
-          speed={reducedMotion ? 0 : 0.6}
-          streakCount={6}
-          streakWidth={1.2}
-          streakLength={1.4}
-          glow={1.2}
-          density={0.5}
-          twinkle={0.8}
-          zoom={2.5}
-          backgroundGlow={0.4}
-          opacity={1}
-          mouseInteraction={HAS_FINE_POINTER && !reducedMotion}
-          mouseStrength={0.6}
-          mouseRadius={0.8}
-          mouseDampening={0.12}
-        />
+      {/* Full-bleed background: Lightfall when supported, else a themed Galaxy.
+          The CSS base shows only if neither WebGL effect can paint. */}
+      <div ref={bgRef} className="hero-bg-fallback absolute inset-0 z-0">
+        {useFallback ? (
+          <Galaxy
+            density={1}
+            hueShift={235}
+            saturation={0.85}
+            glowIntensity={0.45}
+            starSpeed={0.3}
+            rotationSpeed={0.04}
+            twinkleIntensity={0.4}
+            mouseInteraction={false}
+            mouseRepulsion={false}
+            disableAnimation={reducedMotion}
+            transparent
+          />
+        ) : (
+          <Lightfall
+            colors={HERO_COLORS}
+            backgroundColor="#050510"
+            speed={reducedMotion ? 0 : 0.6}
+            streakCount={6}
+            streakWidth={1.2}
+            streakLength={1.4}
+            glow={1.2}
+            density={0.5}
+            twinkle={0.8}
+            zoom={2.5}
+            backgroundGlow={0.4}
+            opacity={1}
+            mouseInteraction={HAS_FINE_POINTER && !reducedMotion}
+            mouseStrength={0.6}
+            mouseRadius={0.8}
+            mouseDampening={0.12}
+          />
+        )}
       </div>
 
       {/* Hero text content on top */}

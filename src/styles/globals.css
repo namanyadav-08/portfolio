@@ -68,6 +68,16 @@ body {
   font-family: var(--font-display);
 }
 
+/* Themed floor behind the hero's WebGL background. Hidden when Lightfall
+   paints (its canvas is opaque); shows through the Galaxy fallback's stars,
+   and is the last resort if no WebGL effect can render at all. */
+.hero-bg-fallback {
+  background:
+    radial-gradient(58% 50% at 22% 18%, rgba(108, 99, 255, 0.28) 0%, transparent 60%),
+    radial-gradient(52% 50% at 82% 72%, rgba(0, 212, 255, 0.2) 0%, transparent 60%),
+    var(--color-bg);
+}
+
 .text-gradient {
   background: linear-gradient(135deg, var(--color-text) 0%, var(--color-primary) 50%, var(--color-secondary) 100%);
   -webkit-background-clip: text;
